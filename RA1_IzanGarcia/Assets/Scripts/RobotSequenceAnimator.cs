@@ -29,7 +29,7 @@ public class RobotSequenceAnimator : MonoBehaviour
         bot.manualMode = false;
         Debug.Log(" INICIO SECUENCIA ");
 
-       
+
         // 1. Hover sobre el cubo
         Vector3 cuboHoverPos = targetCube.position + Vector3.up * alturaHover;
         bot.MoveToTarget(cuboHoverPos);
@@ -48,8 +48,8 @@ public class RobotSequenceAnimator : MonoBehaviour
         }
         else
         {
-           
-            bot.ForceGrab(targetCube.gameObject); 
+
+            bot.ForceGrab(targetCube.gameObject);
         }
         yield return new WaitForSeconds(0.5f);
 
@@ -79,12 +79,12 @@ public class RobotSequenceAnimator : MonoBehaviour
         // 3. Verificar y Soltar
         if (bot.IsInDropZone())
         {
-           
+
             bot.ReleaseObject();
         }
         else
         {
-           
+
             bot.ReleaseObject();
         }
         yield return new WaitForSeconds(0.5f);
@@ -93,7 +93,7 @@ public class RobotSequenceAnimator : MonoBehaviour
         bot.MoveToTarget(dropHoverPos);
         while (bot.isBusy) yield return null;
 
-       
+
         yield return StartCoroutine(bot.ResetArm());
 
         Debug.Log("FIN ");

@@ -27,6 +27,10 @@ public class MyRobotController : MonoBehaviour
     public float evasionSpeed = 60.0f;
     public float recoverySpeed = 30.0f;
 
+    // --- AÑADIDO: Velocidad para mover la base ---
+    public float baseMoveSpeed = 4.0f;
+    // ---------------------------------------------
+
     public bool blockManualOnCollision = true;
     public bool isBusy { get; private set; } = false;
     public bool manualMode = true;
@@ -39,6 +43,33 @@ public class MyRobotController : MonoBehaviour
 
     void Update()
     {
+        // =================================================================
+        // AÑADIDO: MOVIMIENTO DE LA BASE CON FLECHAS
+        // =================================================================
+        float moveX = 0f;
+        float moveZ = 0f;
+
+        // Usamos GetKey para que SOLO las flechas muevan el robot
+        if (Input.GetKey(KeyCode.UpArrow)) moveZ = 1f;
+        if (Input.GetKey(KeyCode.DownArrow)) moveZ = -1f;
+        if (Input.GetKey(KeyCode.RightArrow)) moveX = 1f;
+        if (Input.GetKey(KeyCode.LeftArrow)) moveX = -1f;
+
+        if (moveX != 0 || moveZ != 0)
+        {
+            // Usamos tu librería MyVec3
+            MyVec3 dir = new MyVec3(moveX, 0, moveZ);
+
+            // Normalizar
+            float mag = dir.Magnitude();
+            if (mag > 1f) dir = dir / mag;
+
+            // Mover el transform
+            MyVec3 moveAmount = dir * baseMoveSpeed * Time.deltaTime;
+            transform.Translate(moveAmount.ToUnity(), Space.World);
+        }
+        // =================================================================
+
         if (Input.GetKeyDown(KeyCode.Alpha1)) { manualMode = true; StopAllCoroutines(); isBusy = false; Debug.Log("Modo MANUAL"); }
         if (Input.GetKeyDown(KeyCode.Alpha2)) { manualMode = false; }
         if (Input.GetKeyDown(KeyCode.P)) StartCoroutine(ResetArm());
@@ -129,6 +160,7 @@ public class MyRobotController : MonoBehaviour
 
         while (true)
         {
+            // ALERTA: Recalculamos la posición actual en cada frame para que funcione al moverse
             MyVec3 currentPos = MyVec3.FromUnity(transform.position);
             MyVec3 dir = targetPos - currentPos;
 
@@ -136,7 +168,7 @@ public class MyRobotController : MonoBehaviour
             float idealBase = MyMath.Atan2(dir.x, dir.z) * MyMath.Rad2Deg;
             float dist = MyVec3.Distance(currentPos, targetPos);
 
-            // Heurística FK
+            // Heurística FK (La que tenías original)
             float idealShoulder = MyMath.Clamp(dist * 10f, 0, 50);
             float idealElbow = MyMath.Clamp(dist * 5f, 20, 90);
 
@@ -180,7 +212,7 @@ public class MyRobotController : MonoBehaviour
         isBusy = false;
     }
 
-    
+
     public IEnumerator MoveToPose(float[] target, float duration)
     {
         float t = 0;
