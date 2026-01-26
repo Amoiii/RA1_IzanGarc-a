@@ -10,7 +10,7 @@ public class RobotSequenceAnimator : MonoBehaviour
     private MyRobotController bot;
     private bool isSequenceRunning = false;
 
-    // Altura de seguridad para aproximarse
+    // Altura de seguridad 
     private float alturaHover = 0.5f;
 
     void Awake() => bot = GetComponent<MyRobotController>();
@@ -51,39 +51,37 @@ public class RobotSequenceAnimator : MonoBehaviour
         }
         yield return new WaitForSeconds(0.5f);
 
-        // 4. Subir a Hover (Levantamos el objeto)
+        // 4. Subir  objeto
         bot.MoveToTarget(cuboHoverPos);
         while (bot.isBusy) yield return null;
 
 
-        // ====================================================================
-        // NUEVO: DEMOSTRACIÓN DE ROTACIÓN (Dar una vuelta al objeto)
-        // ====================================================================
-        Debug.Log("Mostrando objeto (Rotación)...");
+       
+        
 
-        // Obtenemos el ángulo actual de la base para que el robot no gire la cintura, solo la mano
+       
         float currentBase = bot.joint_0_Base.localEulerAngles.y;
 
-        // Definimos una pose segura "de inspección" (Brazo levantado)
+      
         // Array: { Base, Hombro, Codo, Muñeca, MiniCodo, GRIPPER }
 
-        // Paso A: Girar el objeto hacia un lado (+90 grados)
+        // Girar el objeto 
         float[] poseGiroA = { currentBase, -30f, 45f, 0f, 45f, 90f };
         yield return StartCoroutine(bot.MoveToPose(poseGiroA, 1.0f)); // 1 segundo para girar
 
-        // Paso B: Girar el objeto hacia el otro lado (-90 grados) para que se vea el movimiento
+       
         float[] poseGiroB = { currentBase, -30f, 45f, 0f, 45f, -90f };
-        yield return StartCoroutine(bot.MoveToPose(poseGiroB, 1.5f)); // 1.5 segundos para girar al otro lado
+        yield return StartCoroutine(bot.MoveToPose(poseGiroB, 1.5f)); 
 
-        // Paso C: Dejarlo recto otra vez antes de viajar
+        //  Dejarlo recto otra vez antes de viajar
         float[] poseRecta = { currentBase, -30f, 45f, 0f, 45f, 0f };
         yield return StartCoroutine(bot.MoveToPose(poseRecta, 0.5f));
 
         yield return new WaitForSeconds(0.2f);
-        // ====================================================================
+       
 
 
-        // 5. ENTREGA (Viaje a DropZone)
+        // 5. ENTREGA
         // Primero hover sobre DropZone
         Vector3 dropHoverPos = dropZone.position + Vector3.up * alturaHover;
         bot.MoveToTarget(dropHoverPos);
@@ -105,14 +103,14 @@ public class RobotSequenceAnimator : MonoBehaviour
         }
         yield return new WaitForSeconds(0.5f);
 
-        // 8. Subir a Hover (Alejarse)
+        // 8. Subir a Hover
         bot.MoveToTarget(dropHoverPos);
         while (bot.isBusy) yield return null;
 
-        // 9. Resetear brazo a posición original
+        
         yield return StartCoroutine(bot.ResetArm());
 
-        Debug.Log("FIN ");
+        
         bot.manualMode = true;
         isSequenceRunning = false;
     }
