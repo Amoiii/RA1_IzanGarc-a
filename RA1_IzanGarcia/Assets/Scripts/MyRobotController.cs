@@ -271,7 +271,7 @@ public class MyRobotController : MonoBehaviour
         if (rb) rb.isKinematic = true;
         obj.transform.SetParent(gripPoint);
         obj.transform.localPosition = Vector3.zero;
-        obj.transform.localRotation = Quaternion.identity;
+        obj.transform.localEulerAngles = new Vector3(90, 0, 0);
     }
 
     public void ReleaseObject()
