@@ -54,7 +54,7 @@ public class MyRobotController : MonoBehaviour
 
         if (moveX != 0 || moveZ != 0)
         {
-            // Usamos tu librería MyVec3
+           
             MyVec3 dir = new MyVec3(moveX, 0, moveZ);
 
             // Normalizar
@@ -197,7 +197,7 @@ public class MyRobotController : MonoBehaviour
 
             ApplyAllRotations();
 
-            // Condición de llegada
+            //llegada
             if (MyMath.Abs(baseAngleY - idealBase) < 1f &&
                 MyMath.Abs(shoulderAngleX - finalShoulder) < 2f &&
                 !muroEnfrente)
